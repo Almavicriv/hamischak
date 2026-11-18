@@ -244,6 +244,7 @@ $('send').onclick=async()=>{
     await db.collection('scores').add({name,score:last.score,left:last.left});
     scoreSubmitted=true;
     msg.textContent='נשלח ללוח!';
+    sendButton.textContent='שיח"כת אותה!';
   }catch(e){
     console.error('Leaderboard submit failed:',e);
     msg.textContent='לא הצלחנו לשלוח, נסו שוב';
