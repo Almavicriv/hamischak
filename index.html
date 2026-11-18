@@ -47,6 +47,7 @@ svg.hemi{display:block;width:100%;max-width:420px;margin:0 auto}
 .row{display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--p2)}.row:last-child{border:0}.row .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.row b{font-variant-numeric:tabular-nums}
 .score{text-align:center;font-size:64px;font-weight:900;color:var(--g2);line-height:1}.score small{font-size:24px;color:var(--mut)}
 .note{color:var(--mut);font-size:14px;text-align:center;margin:6px 0}
+.scoreRow{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}.scoreRow button{padding:10px 16px;min-height:44px;font-size:16px}
 #img{position:fixed;inset:0;background:#000d;z-index:9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px}
 #img img{max-width:100%;max-height:70%;border-radius:10px}
 .logo,.mini img{-webkit-mask-image:radial-gradient(circle,#000 58%,transparent 70.7%);mask-image:radial-gradient(circle,#000 58%,transparent 70.7%)}
@@ -90,7 +91,7 @@ details{margin-top:8px;color:var(--mut);font-size:14px}
 
 <section id="result" class="hidden">
 <img class="logo sm" data-logo alt="המשח״כ">
-<div class="score"><span id="rs">0</span><small>/120</small></div>
+<div class="scoreRow"><div class="score"><span id="rs">0</span><small>/120</small></div><button class="gold" id="shareTxt" aria-label="שיתוף התוצאה">📤 שיתוף</button></div>
 <p class="note" id="rt"></p>
 <button class="big gold" id="share">שתפו כתמונה (JPEG)</button>
 <div class="panel"><h2>שלחו ללוח התוצאות</h2>
@@ -267,6 +268,12 @@ async function jpeg(){
   return new Promise(r=>c.toBlob(r,'image/jpeg',.92));
 }
 $('share').onclick=async()=>{blob=await jpeg();$('pic').src=URL.createObjectURL(blob);$('img').classList.remove('hidden')};
+$('shareTxt').onclick=async()=>{
+  const text=`המשח״כ 🇮🇱 הצלחתי למנות ${last.score} חברי כנסת ב-15 דקות!\nכמה תוכלו למנות? שחקו כאן:\nhttps://hamischak.netlify.app`;
+  if(navigator.share){try{await navigator.share({text});}catch(e){}return}
+  try{await navigator.clipboard.writeText(text);const b=$('shareTxt');b.textContent='✓ הועתק!';setTimeout(()=>b.textContent='📤 שיתוף',2000);}
+  catch(e){prompt('העתיקו את ההודעה:',text)}
+};
 $('cls').onclick=()=>$('img').classList.add('hidden');
 $('dl').onclick=()=>{const a=document.createElement('a');a.href=$('pic').src;a.download='mishach.jpg';a.click()};
 renderLB();
